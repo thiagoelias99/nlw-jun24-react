@@ -1,4 +1,5 @@
 import { Button } from '@/components/Button'
+import Divider from '@/components/Divider'
 import { XIcon, AtSignIcon, PlusIcon } from 'lucide-react'
 
 interface UsersModalProps {
@@ -34,7 +35,7 @@ export default function UsersModal({ setShowUserModal, setUsers, users }: UsersM
           ))}
         </div>
 
-        <div className='w-full h-0.5 bg-zinc-800'></div>
+        <Divider />
         <div className='w-full flex justify-start items-center gap-5 pl-6 pr-4 py-0 bg-black h-16 rounded-xl shadow-shape'>
           <form
             onSubmit={(e) => {
