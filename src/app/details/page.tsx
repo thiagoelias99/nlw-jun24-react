@@ -10,7 +10,7 @@ export default function DetailsPage() {
       <Input3 />
       <div className='w-full mt-8 flex justify-start items-start gap-8'>
         <ActivitiesSection className='flex-1' />
-        <div className='w-1/3'>
+        <div className='w-1/3 space-y-6'>
           <LinksSection />
           <Divider />
           <GuestsSection />
