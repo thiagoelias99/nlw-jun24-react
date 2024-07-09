@@ -1,3 +1,4 @@
+import { Button } from '@/components/Button'
 import { MapPinIcon, CalendarIcon, Settings2Icon, ArrowRightIcon } from 'lucide-react'
 import React from 'react'
 
@@ -26,20 +27,19 @@ export default function Input1({ setShowUserInput, showUserInput }: Input1Props)
       </div>
 
       {showUserInput ?
-        (<button
-          className='bg-zinc-800 hover:bg-zinc-700 h-9 text-zinc-200 rounded-lg flex items-center justify-center gap-2 px-5 py-2'
+        (<Button
+          variant='secondary'
           onClick={() => setShowUserInput(false)}
         >
           <p>Alterar local/data</p>
           <Settings2Icon className='h-5 w-5' />
-        </button>) :
-        (<button
-          className='bg-lime-300 hover:bg-lime-400 h-9 text-lime-950 rounded-lg flex items-center justify-center gap-2 px-5 py-2'
+        </Button>) :
+        (<Button          
           onClick={() => setShowUserInput(true)}
         >
           <p>Continuar</p>
           <ArrowRightIcon className='h-5 w-5' />
-        </button>)}
+        </Button>)}
     </div>
   )
 }

@@ -1,3 +1,4 @@
+import { Button } from '@/components/Button'
 import { XIcon, UserIcon, MailIcon } from 'lucide-react'
 import React from 'react'
 
@@ -41,11 +42,12 @@ export default function ConfirmModal({ setShowConfirmModal }: ConfirmModalProps)
                 placeholder="Seu e-mail pessoal" />
             </div>
           </div>
-          <button
+          <Button
             type='submit'
-            className='bg-lime-300 w-full hover:bg-lime-400 h-9 text-lime-950 rounded-lg flex items-center justify-center gap-2 px-5 py-2'>
+            size='full'
+          >
             <p>Confirmar criação da viagem</p>
-          </button>
+          </Button>
         </form>
       </div>
     </div>

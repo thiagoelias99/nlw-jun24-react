@@ -1,3 +1,4 @@
+import { Button } from '@/components/Button'
 import { XIcon, AtSignIcon, PlusIcon } from 'lucide-react'
 
 interface UsersModalProps {
@@ -53,12 +54,12 @@ export default function UsersModal({ setShowUserModal, setUsers, users }: UsersM
                 type="text"
                 placeholder="Digite o email do convidado" />
             </div>
-            <button
+            <Button
               type='submit'
-              className='bg-lime-300 hover:bg-lime-400 h-9 text-lime-950 rounded-lg flex items-center justify-center gap-2 px-5 py-2'>
+            >
               <p>Convidar</p>
               <PlusIcon className='h-5 w-5' />
-            </button>
+            </Button>
           </form>
         </div>
       </div>
