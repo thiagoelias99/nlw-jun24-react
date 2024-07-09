@@ -1,12 +1,22 @@
 'use client'
 
-import { ArrowRightIcon, AtSignIcon, CalendarIcon, MapPinIcon, PlusIcon, Settings2Icon, UserRoundPlus, XIcon } from 'lucide-react'
+import { ArrowRightIcon, AtSignIcon, CalendarIcon, MapPinIcon, PlusIcon, Settings2Icon, UserRoundPlus, X, XIcon } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
 
 export default function Home() {
   const [showUserInput, setShowUserInput] = useState(false)
   const [showUserModal, setShowUserModal] = useState(false)
+  const [users, setUsers] = useState<string[]>([
+    'thiago@email.com',
+    'thiago2@email.com',
+    'thiago@email.com',
+    'thiago2@email.com',
+    'thiago@email.com',
+    'thiago2@email.com',
+    'thiago@email.com',
+    'thiago2@email.com',
+  ])
 
   return (
     <main className='flex h-svh flex-col justify-center items-center bg-pattern bg-no-repeat bg-center'>
@@ -63,7 +73,7 @@ export default function Home() {
               onClick={() => setShowUserModal(true)}
               className='flex flex-1 justify-start items-center gap-2'>
               <UserRoundPlus className='h-5 w-5 text-zinc-400' />
-              <span className='bg-transparent text-zinc-400 outline-none'>Quem estará na viagem?</span>
+              <span className='bg-transparent text-zinc-400 outline-none'>{users.length === 0 ? 'Quem estará na viagem?' : `${users.length} pessoa(s) convidada(s)`}</span>
             </button>
             <button className='bg-lime-300 hover:bg-lime-400 h-9 text-lime-950 rounded-lg flex items-center justify-center gap-2 px-5 py-2'>
               <p>Confirmar viagem</p>
@@ -91,16 +101,46 @@ export default function Home() {
             </div>
             <p className='text-sm text-zinc-400'>Os convidados irão receber e-mails para confirmar a participação na viagem.</p>
           </div>
+
+          <div className='w-full flex justify-start items-center flex-wrap gap-2'>
+            {users.map((user, index) => (
+              <div key={index} className='bg-zinc-800 text-zinc-300 flex px-2.5 py-1.5 justify-start items-center gap-2.5 rounded-md'>
+                <p>{user}</p>
+                <XIcon
+                  className='h-4 w-4 text-zinc-400 cursor-pointer'
+                  onClick={() => setUsers(users.filter(u => u !== user))}
+                />
+              </div>
+            ))}
+          </div>
+
           <div className='w-full h-0.5 bg-zinc-800'></div>
           <div className='w-full flex justify-start items-center gap-5 pl-6 pr-4 py-0 bg-black h-16 rounded-xl shadow-shape'>
-            <div className='flex flex-1 justify-start items-center gap-2'>
-              <AtSignIcon className='h-5 w-5 text-zinc-400' />
-              <input className='bg-transparent placeholder:text-zinc-400 outline-none' type="text" placeholder="Digite o email do convidado" />
-            </div>
-            <button className='bg-lime-300 hover:bg-lime-400 h-9 text-lime-950 rounded-lg flex items-center justify-center gap-2 px-5 py-2'>
-              <p>Convidar</p>
-              <PlusIcon className='h-5 w-5' />
-            </button>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                const userEmail = e.target.userEmail.value
+                if (userEmail) {
+                  setUsers([...users, userEmail])
+                  e.target.userEmail.value = ''
+                }
+              }}
+              className='contents'>
+              <div className='flex flex-1 justify-start items-center gap-2'>
+                <AtSignIcon className='h-5 w-5 text-zinc-400' />
+                <input
+                  name='userEmail'
+                  className='bg-transparent placeholder:text-zinc-400 outline-none'
+                  type="text"
+                  placeholder="Digite o email do convidado" />
+              </div>
+              <button
+                type='submit'
+                className='bg-lime-300 hover:bg-lime-400 h-9 text-lime-950 rounded-lg flex items-center justify-center gap-2 px-5 py-2'>
+                <p>Convidar</p>
+                <PlusIcon className='h-5 w-5' />
+              </button>
+            </form>
           </div>
         </div>
       </div>
