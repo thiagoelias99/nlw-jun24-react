@@ -7,11 +7,15 @@ import Input1 from './_components/input1'
 import Input2 from './_components/input2'
 import Header from './_components/header'
 import Footer from './_components/footer'
+import DatePicker from '@/components/date-picker'
+import { DateRange } from 'react-day-picker'
 
 export default function Home() {
   const [showUserInput, setShowUserInput] = useState(false)
   const [showUserModal, setShowUserModal] = useState(false)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
+  const [showDatePicker, setShowDatePicker] = useState(true)
+  const [dateRange, setDateRange] = useState<DateRange | undefined>()
   const [users, setUsers] = useState<string[]>([
     'thiago@email.com',
     'thiago2@email.com'
@@ -23,7 +27,9 @@ export default function Home() {
         <Header />
         <Input1
           setShowUserInput={setShowUserInput}
+          setShowDatePicker={setShowDatePicker}
           showUserInput={showUserInput}
+          dateRange={dateRange}
         />
 
         {showUserInput && (
@@ -47,6 +53,14 @@ export default function Home() {
       {showConfirmModal && (
         <ConfirmModal
           setShowConfirmModal={setShowConfirmModal}
+        />
+      )}
+
+      {showDatePicker && (
+        <DatePicker 
+          setShowDatePicker={setShowDatePicker}
+          dateRange={dateRange}
+          setDateRange={setDateRange}
         />
       )}
     </main >
