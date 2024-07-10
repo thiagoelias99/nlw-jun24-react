@@ -10,6 +10,7 @@ import Footer from './_components/footer'
 import DatePicker from '@/components/date-picker'
 import { DateRange } from 'react-day-picker'
 import { useImmer } from 'use-immer'
+import { api } from '@/utils/api'
 
 export default function Home() {
   const [createTripData, setCreateTripData] = useImmer({
@@ -46,7 +47,7 @@ export default function Home() {
   }, [dateRange])
 
   function handleCreateTrip() {
-    console.log(createTripData)
+    api.post('/trips', createTripData)
   }
 
   return (
