@@ -6,9 +6,12 @@ import React, { useState } from 'react'
 
 export default function GuestsSection() {
   const [guest, setGuest] = useState<{ name: string, email: string }[]>([
-    { name: 'Jessica White', email: 'jessica@email.com' },
-    { name: 'Dr Rita', email: 'rita@email.com' },
-    { name: 'Dr. John Doe', email: 'jhon@email.com' },
+    { name: 'El Chavo', email: 'chaves@email.com' },
+    { name: 'Chapolim', email: 'chapolim@email.com' },
+    { name: '', email: 'madruga@email.com' },
+    { name: '', email: 'bruxa@email.com'},
+    { name: 'Quico', email: 'quico@email.com'},
+    { name: '', email: 'dflores@email.com'},
   ])
 
   return (

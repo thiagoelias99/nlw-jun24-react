@@ -15,10 +15,10 @@ export default function Input3({ }: Input1Props) {
           className='bg-transparent placeholder:text-zinc-400 outline-none' type="text" placeholder="Para onde você vai?" />
       </div>
       <div className='flex justify-end items-center'>
-        <div className='w-28 flex justify-end items-center gap-2'>
+        <div className='w-48 flex justify-end items-center gap-2'>
           <CalendarIcon className='min-h-5 min-w-5 text-zinc-400' />
           <input
-            className='bg-transparent placeholder:text-zinc-400' type="text" placeholder='Quando ?' />
+            className='bg-transparent placeholder:text-zinc-400 outline-none' type="text" placeholder='Quando ?' />
         </div>
         <div className='text-zinc-800 h-full'>|</div>
       </div>
