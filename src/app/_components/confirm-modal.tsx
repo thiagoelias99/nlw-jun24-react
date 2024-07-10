@@ -4,9 +4,12 @@ import { useRouter } from 'next/navigation'
 
 interface ConfirmModalProps {
   setShowConfirmModal: (show: boolean) => void
+  setOwnerName: (owner_name: string) => void
+  setOwnerEmail: (owner_email: string) => void
+  createTrip: () => void
 }
 
-export default function ConfirmModal({ setShowConfirmModal }: ConfirmModalProps) {
+export default function ConfirmModal({ setShowConfirmModal, setOwnerEmail, setOwnerName, createTrip }: ConfirmModalProps) {
   const router = useRouter()
 
   return (
@@ -26,7 +29,9 @@ export default function ConfirmModal({ setShowConfirmModal }: ConfirmModalProps)
           className='w-full flex flex-col justify-start items-start gap-2'
           onSubmit={(e) => {
             e.preventDefault()
-            router.push('/details')
+            createTrip()
+            // router.push('/details')
+
           }}
         >
           <div className='w-full flex justify-start items-center gap-5 pl-6 pr-4 py-0 bg-black h-16 rounded-xl shadow-shape'>
@@ -34,6 +39,7 @@ export default function ConfirmModal({ setShowConfirmModal }: ConfirmModalProps)
               <UserIcon className='h-5 w-5 text-zinc-400' />
               <input
                 name='name'
+                onChange={(e) => setOwnerName(e.target.value)}
                 className='bg-transparent placeholder:text-zinc-400 outline-none'
                 type="text"
                 placeholder="Seu nome completo" />
@@ -44,6 +50,7 @@ export default function ConfirmModal({ setShowConfirmModal }: ConfirmModalProps)
               <MailIcon className='h-5 w-5 text-zinc-400' />
               <input
                 name='email'
+                onChange={(e) => setOwnerEmail(e.target.value)}
                 className='bg-transparent placeholder:text-zinc-400 outline-none'
                 type="text"
                 placeholder="Seu e-mail pessoal" />

@@ -10,15 +10,19 @@ interface Input1Props {
   setShowDatePicker: (show: boolean) => void
   setShowUserInput: (show: boolean) => void
   dateRange: DateRange | undefined
+  destination: string
+  setDestination: (destination: string) => void
 }
 
-export default function Input1({ setShowUserInput, showUserInput, setShowDatePicker, dateRange }: Input1Props) {
+export default function Input1({ setShowUserInput, showUserInput, setShowDatePicker, dateRange, destination, setDestination }: Input1Props) {
   return (
     <div className='w-[720px] mt-5 flex justify-start items-center gap-5 pl-6 pr-4 py-0 bg-zinc-900 h-16 rounded-xl shadow-shape'>
       <div className='flex flex-1 justify-start items-center gap-2'>
         <MapPinIcon className='h-5 w-5 text-zinc-400' />
         <input
           disabled={showUserInput}
+          value={destination}
+          onChange={e => setDestination(e.target.value)}
           className='bg-transparent placeholder:text-zinc-400 outline-none' type="text" placeholder="Para onde você vai?" />
       </div>
       <div className='flex justify-end items-center'>
