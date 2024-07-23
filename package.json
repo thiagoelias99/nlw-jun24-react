@@ -1,5 +1,5 @@
 {
-  "name": "planner",
+  "name": "nlw-jun24",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -13,6 +13,7 @@
     "axios": "^1.7.2",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
+    "firebase": "^10.12.4",
     "immer": "^10.1.1",
     "lucide-react": "^0.404.0",
     "next": "14.2.4",
