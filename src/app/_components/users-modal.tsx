@@ -1,6 +1,7 @@
 import { Button } from '@/components/Button'
 import Divider from '@/components/Divider'
 import { XIcon, AtSignIcon, PlusIcon } from 'lucide-react'
+import { z } from 'zod'
 
 interface UsersModalProps {
   setShowUserModal: (show: boolean) => void
@@ -41,6 +42,14 @@ export default function UsersModal({ setShowUserModal, setUsers, users }: UsersM
             onSubmit={(e) => {
               e.preventDefault()
               const userEmail = e.target.userEmail.value
+
+              try {
+                z.string().email().parse(userEmail)
+              } catch (error) {
+                alert('Email inválido')
+                return
+              }
+
               if (userEmail) {
                 setUsers([...users, userEmail])
                 e.target.userEmail.value = ''

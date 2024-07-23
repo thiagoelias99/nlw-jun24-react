@@ -1,7 +1,9 @@
+import { createTripDtoSchema, ICreateTripDto } from '@/models/trip'
 import { fireStore } from '@/services/firebase'
 import { getMailClient } from '@/services/mail'
 import { collection, addDoc } from 'firebase/firestore'
 import nodemailer from 'nodemailer'
+import { ZodError } from 'zod'
 
 export async function POST(req: Request) {
   const body = await req.json()
@@ -9,6 +11,10 @@ export async function POST(req: Request) {
     const docRef = await addDoc(collection(fireStore, 'trips'), {
       body
     })
+
+    const parsedBody = createTripDtoSchema.parse(body)
+
+    console.log('Parsed body: ', parsedBody)
 
     console.log('Document written with ID: ', docRef.id)
 
@@ -20,7 +26,7 @@ export async function POST(req: Request) {
         address: 'planner@email.com'
       },
       to: {
-        name: body.owner_name,
+        name: body.owner_email,
         address: body.owner_email
       },
       subject: 'Nova viagem criada',
@@ -35,9 +41,14 @@ export async function POST(req: Request) {
     console.log('Message sent: %s', message.messageId)
     console.log('Preview URL: %s', nodemailer.getTestMessageUrl(message))
 
-  } catch (e) {
-    console.error('Error adding document: ', e)
-  }
+    return Response.json(body)
 
-  return Response.json(body)
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return Response.json({ error: error.flatten().fieldErrors }, { status: 400 })
+    } else {
+      console.error('Error adding document: ', error)
+      return Response.json({ error: 'Error adding document' }, { status: 500 })
+    }
+  }
 } 

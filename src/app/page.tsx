@@ -11,16 +11,19 @@ import DatePicker from '@/components/date-picker'
 import { DateRange } from 'react-day-picker'
 import { useImmer } from 'use-immer'
 import { api } from '@/utils/api'
+import { createTripDtoSchema } from '@/models/trip'
+import { ZodError } from 'zod'
+import { format } from 'date-fns'
 
 export default function Home() {
   const [createTripData, setCreateTripData] = useImmer({
     destination: '',
     starts_at: '',
     ends_at: '',
-    emails_to_invite: [
+    emails_to_invite: new Set([
       'thiago@email.com',
       'thiago2@email.com'
-    ],
+    ]),
     owner_name: '',
     owner_email: ''
   })
@@ -31,6 +34,7 @@ export default function Home() {
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [showDatePicker, setShowDatePicker] = useState(false)
   const [dateRange, setDateRange] = useState<DateRange | undefined>()
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     if (dateRange?.from && dateRange?.to) {
@@ -46,8 +50,32 @@ export default function Home() {
     }
   }, [dateRange])
 
-  function handleCreateTrip() {
-    api.post('/trips', createTripData)
+  async function handleCreateTrip() {
+    setIsLoading(true)
+    try {
+      const normalizedData = createTripDtoSchema.parse({
+        ...createTripData,
+        ends_at: format(new Date(createTripData.ends_at), 'yyyy-MM-dd'),
+        starts_at: format(new Date(createTripData.starts_at), 'yyyy-MM-dd'),
+        emails_to_invite: Array.from(createTripData.emails_to_invite)
+      })
+      const response = await api.post('/trips', normalizedData)
+
+      if (response.status === 200) {
+        alert('Viagem criada com sucesso. Verifique seu email para confirmar a viagem')
+
+        window.location.reload()
+      }
+
+    } catch (error) {
+      if (error instanceof ZodError) {
+        console.error('Error parsing data: ', error.flatten().fieldErrors)
+      } else {
+        console.error('Error parsing data: ', error)
+      }
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -67,7 +95,7 @@ export default function Home() {
           <Input2
             setShowUserModal={setShowUserModal}
             setShowConfirmModal={setShowConfirmModal}
-            users={createTripData.emails_to_invite}
+            users={Array.from(createTripData.emails_to_invite)}
           />
         )}
         <Footer />
@@ -76,8 +104,8 @@ export default function Home() {
       {showUserModal && (
         <UsersModal
           setShowUserModal={setShowUserModal}
-          setUsers={emails => setCreateTripData(draft => { draft.emails_to_invite = emails })}
-          users={createTripData.emails_to_invite}
+          setUsers={emails => setCreateTripData(draft => { draft.emails_to_invite = new Set(emails) })}
+          users={Array.from(createTripData.emails_to_invite)}
         />
       )}
 
@@ -87,6 +115,7 @@ export default function Home() {
           setOwnerName={owner_name => setCreateTripData(draft => { draft.owner_name = owner_name })}
           setOwnerEmail={owner_email => setCreateTripData(draft => { draft.owner_email = owner_email })}
           createTrip={handleCreateTrip}
+          isLoading={isLoading}
         />
       )}
 

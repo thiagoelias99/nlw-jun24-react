@@ -1,16 +1,17 @@
 import { Button } from '@/components/Button'
-import { XIcon, UserIcon, MailIcon } from 'lucide-react'
+import { XIcon, UserIcon, MailIcon, LoaderCircleIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { z } from 'zod'
 
 interface ConfirmModalProps {
   setShowConfirmModal: (show: boolean) => void
   setOwnerName: (owner_name: string) => void
   setOwnerEmail: (owner_email: string) => void
   createTrip: () => void
+  isLoading: boolean
 }
 
-export default function ConfirmModal({ setShowConfirmModal, setOwnerEmail, setOwnerName, createTrip }: ConfirmModalProps) {
-  const router = useRouter()
+export default function ConfirmModal({ setShowConfirmModal, setOwnerEmail, setOwnerName, createTrip, isLoading }: ConfirmModalProps) {
 
   return (
     <div className='inset-0 fixed bg-black w-full h-full bg-opacity-60 flex items-center justify-center'>
@@ -29,9 +30,19 @@ export default function ConfirmModal({ setShowConfirmModal, setOwnerEmail, setOw
           className='w-full flex flex-col justify-start items-start gap-2'
           onSubmit={(e) => {
             e.preventDefault()
-            createTrip()
-            // router.push('/details')
 
+            const ownerName = e.target.name.value
+            const ownerEmail = e.target.email.value
+
+            try {
+              z.string().min(1).parse(ownerName)
+              z.string().email().parse(ownerEmail)
+            } catch (error) {
+              alert('Preencha todos os campos corretamente')
+              return
+            }
+
+            createTrip()
           }}
         >
           <div className='w-full flex justify-start items-center gap-5 pl-6 pr-4 py-0 bg-black h-16 rounded-xl shadow-shape'>
@@ -59,8 +70,10 @@ export default function ConfirmModal({ setShowConfirmModal, setOwnerEmail, setOw
           <Button
             type='submit'
             size='full'
+            disabled={isLoading}
           >
             <p>Confirmar criação da viagem</p>
+            {isLoading && <LoaderCircleIcon className='h-5 w-5 animate-spin' />}
           </Button>
         </form>
       </div>
