@@ -61,7 +61,7 @@ export default function Home() {
       })
       const response = await api.post('/trips', normalizedData)
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         alert('Viagem criada com sucesso. Verifique seu email para confirmar a viagem')
 
         window.location.reload()

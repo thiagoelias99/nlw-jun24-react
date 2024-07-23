@@ -6,17 +6,16 @@ import nodemailer from 'nodemailer'
 import { ZodError } from 'zod'
 
 export async function POST(req: Request) {
-  const body = await req.json()
   try {
-    const docRef = await addDoc(collection(fireStore, 'trips'), {
-      body
-    })
-
+    const body = await req.json()
     const parsedBody = createTripDtoSchema.parse(body)
 
-    console.log('Parsed body: ', parsedBody)
+    const docRef = await addDoc(collection(fireStore, 'trips'), {
+      ...parsedBody,
+      confirmed: false
+    })
 
-    console.log('Document written with ID: ', docRef.id)
+    const tripId = docRef.id
 
     const mail = await getMailClient()
 
@@ -31,17 +30,24 @@ export async function POST(req: Request) {
       },
       subject: 'Nova viagem criada',
       html: `
-        <h1>Viagem criada com sucesso</h1>
+        <h1>Viagem para ${parsedBody.destination} criada com sucesso</h1>
         <p>Olá, uma nova viagem foi criada com sucesso!</p>
         <p>Confira os detalhes:</p>
-        <pre>${JSON.stringify(body, null, 2)}</pre>
-      `
+        <ul>
+          <li>Destino: ${parsedBody.destination}</li>
+          <li>Início: ${parsedBody.starts_at}</li>
+          <li>Fim: ${parsedBody.ends_at}</li>
+        </ul>
+        <p>Para confirmar sua presença, clique no link abaixo:</p>
+        <a href="http://localhost:3000/api/trips/${tripId}/confirm">Confirmar trip</a>
+        `
     })
 
-    console.log('Message sent: %s', message.messageId)
-    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(message))
+    const testURL = nodemailer.getTestMessageUrl(message)
 
-    return Response.json(body)
+    console.log('Preview URL: %s', testURL)
+
+    return Response.json({ confirm_url: testURL }, { status: 201 })
 
   } catch (error) {
     if (error instanceof ZodError) {
