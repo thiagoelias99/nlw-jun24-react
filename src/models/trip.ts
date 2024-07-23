@@ -19,6 +19,12 @@ export const createTripDtoSchema = z.object({
 
 export type ICreateTripDto = z.infer<typeof createTripDtoSchema>
 
+export interface ITripGuests {
+  email: string
+  name: string
+  is_confirmed: boolean
+}
+
 export interface ITrip {
   id: string
   destination: string
@@ -74,10 +80,4 @@ export class Trip implements ITrip {
       return undefined
     }
   }
-}
-
-interface ITripGuests {
-  email: string
-  name: string
-  is_confirmed: boolean
 }

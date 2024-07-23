@@ -1,25 +1,24 @@
 'use client'
 
 import { Button } from '@/components/Button'
+import { ITripGuests } from '@/models/trip'
 import { CircleCheckIcon, CircleDashedIcon, UserCogIcon } from 'lucide-react'
-import React, { useState } from 'react'
+import React from 'react'
 
-export default function GuestsSection() {
-  const [guest, setGuest] = useState<{ name: string, email: string }[]>([
-    { name: 'El Chavo', email: 'chaves@email.com' },
-    { name: 'Chapolim', email: 'chapolim@email.com' },
-    { name: '', email: 'madruga@email.com' },
-    { name: '', email: 'bruxa@email.com'},
-    { name: 'Quico', email: 'quico@email.com'},
-    { name: '', email: 'dflores@email.com'},
-  ])
+interface Props {
+  guests: ITripGuests[]
+}
 
+export default function GuestsSection({ guests }: Props) {
   return (
     <section>
       <h1 className='text-zinc-50 text-xl font-semibold'>Convidados</h1>
       <div className='space-y-5 my-5'>
-        {guest.map((guest, index) => (
-          <GuestItem key={index} name={guest.name} email={guest.email} />
+        {guests.map((guest, index) => (
+          <GuestItem
+            key={index}
+            {...guest}
+          />
         ))}
       </div>
       <Button
@@ -33,21 +32,19 @@ export default function GuestsSection() {
   )
 }
 
-function GuestItem({name, email}: {name: string, email: string}) {
-  const [checked, setChecked] = useState(false)
+function GuestItem({ name, email, is_confirmed }: { name: string, email: string, is_confirmed: boolean }) {
+
   return (
     <div className='w-full flex justify-between items-center'>
       <div>
         <h2 className='text-zinc-100'>{name}</h2>
         <h3 className='text-zinc-400 text-sm'>{email}</h3>
       </div>
-      {checked ? (
+      {is_confirmed ? (
         <CircleCheckIcon className='w-5 h-5 text-lime-300'
-          onClick={() => setChecked(!checked)}
         />
       ) : (
         <CircleDashedIcon className='w-5 h-5 text-zinc-400'
-          onClick={() => setChecked(!checked)}
         />
       )}
     </div>

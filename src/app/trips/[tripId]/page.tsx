@@ -1,19 +1,34 @@
 import Divider from '@/components/Divider'
-import Input3 from './_components/input3'
 import ActivitiesSection from './_components/activities-section'
 import LinksSection from './_components/links-section'
 import GuestsSection from './_components/guest-section'
+import { redirect } from 'next/navigation'
+import { api } from '@/utils/api'
+import { Trip } from '@/models/trip'
 
-export default function DetailsPage() {
+interface Props {
+  params: {
+    tripId: string
+  }
+}
+
+export default async function DetailsPage({ params }: Props) {
+  if (!params.tripId) {
+    redirect('/')
+  }
+
+  const data = await api.get<Trip>(`/trips?tripId=${params.tripId}`)
+
+  console.log(data.data)
+
   return (
     <main className='max-w-[1100px] px-8 m-auto flex flex-col justify-center items-center'>
-      <Input3 />
       <div className='w-full mt-8 flex justify-start items-start gap-8'>
         <ActivitiesSection className='flex-1' />
         <div className='w-1/3 space-y-6'>
           <LinksSection />
           <Divider />
-          <GuestsSection />
+          <GuestsSection guests={data.data.guests} />
         </div>
       </div>
     </main>

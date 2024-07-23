@@ -1,7 +1,8 @@
-import { createTripDtoSchema, ICreateTripDto } from '@/models/trip'
+import { createTripDtoSchema, Trip } from '@/models/trip'
 import { fireStore } from '@/services/firebase'
 import { getMailClient } from '@/services/mail'
 import { collection, addDoc, doc, setDoc } from 'firebase/firestore'
+import { NextRequest } from 'next/server'
 import nodemailer from 'nodemailer'
 import { ZodError } from 'zod'
 
@@ -63,4 +64,21 @@ export async function POST(req: Request) {
       return Response.json({ error: 'Error adding document' }, { status: 500 })
     }
   }
-} 
+}
+
+export async function GET(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams
+  const tripId = searchParams.get('tripId')
+
+  if (!tripId) {
+    return Response.json({ error: 'Trip ID is required' }, { status: 400 })
+  }
+
+  const trip = await Trip.fromFirestore(tripId)
+
+  if (!trip) {
+    return Response.json({ error: 'Trip not found' }, { status: 404 })
+  }
+
+  return Response.json(trip)
+}
