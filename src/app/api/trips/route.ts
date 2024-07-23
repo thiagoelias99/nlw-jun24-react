@@ -1,7 +1,7 @@
 import { createTripDtoSchema, ICreateTripDto } from '@/models/trip'
 import { fireStore } from '@/services/firebase'
 import { getMailClient } from '@/services/mail'
-import { collection, addDoc } from 'firebase/firestore'
+import { collection, addDoc, doc, setDoc } from 'firebase/firestore'
 import nodemailer from 'nodemailer'
 import { ZodError } from 'zod'
 
@@ -9,11 +9,17 @@ export async function POST(req: Request) {
   try {
     const body = await req.json()
     const parsedBody = createTripDtoSchema.parse(body)
+    const emails_to_invite = parsedBody.emails_to_invite?.map(email => ({ email, is_confirmed: false, name: '' })) || []
+    delete parsedBody.emails_to_invite
 
     const docRef = await addDoc(collection(fireStore, 'trips'), {
       ...parsedBody,
       confirmed: false
     })
+
+    for (const email of emails_to_invite) {
+      await setDoc(doc(fireStore, `trips/${docRef.id}/guests`, email.email), email)
+    }
 
     const tripId = docRef.id
 
