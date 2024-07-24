@@ -1,6 +1,7 @@
 import z from 'zod'
-import { setDoc, doc, getDoc, collection, getDocs } from 'firebase/firestore'
+import { doc, getDoc, collection, getDocs, addDoc, setDoc, deleteDoc } from 'firebase/firestore'
 import { fireStore } from '@/services/firebase'
+import { tr } from 'date-fns/locale'
 
 export const createTripDtoSchema = z.object({
   destination: z.string().min(1),
@@ -19,10 +20,33 @@ export const createTripDtoSchema = z.object({
 
 export type ICreateTripDto = z.infer<typeof createTripDtoSchema>
 
+export const createLinkDtoSchema = z.object({
+  title: z.string().min(1),
+  url: z.string().url(),
+  tripId: z.string().min(1),
+})
+
+export type ICreateLinkDto = z.infer<typeof createLinkDtoSchema>
+
+export const updateLinkDtoSchema = z.object({
+  title: z.string().min(1),
+  url: z.string().url(),
+  tripId: z.string().min(1),
+  linkId: z.string().min(1),
+})
+
+export type IUpdateLinkDto = z.infer<typeof updateLinkDtoSchema>
+
 export interface ITripGuests {
   email: string
   name: string
   is_confirmed: boolean
+}
+
+export interface ITripLinks {
+  id: string
+  title: string
+  url: string
 }
 
 export interface ITrip {
@@ -34,6 +58,7 @@ export interface ITrip {
   ownerEmail: string
   isConfirmed: boolean
   guests: ITripGuests[]
+  links: ITripLinks[]
 }
 
 export class Trip implements ITrip {
@@ -45,6 +70,7 @@ export class Trip implements ITrip {
   ownerEmail: string
   isConfirmed: boolean
   guests: ITripGuests[]
+  links: ITripLinks[]
 
   constructor(data: ITrip) {
     Object.assign(this, data)
@@ -63,7 +89,8 @@ export class Trip implements ITrip {
         ownerName: tripSnapshot.data().owner_name,
         ownerEmail: tripSnapshot.data().owner_email,
         isConfirmed: tripSnapshot.data().confirmed,
-        guests: []
+        guests: [],
+        links: []
       })
 
       const guestsDocs = await getDocs(collection(fireStore, 'trips', tripId, 'guests'))
@@ -75,9 +102,40 @@ export class Trip implements ITrip {
         }
       })
 
+      const linksDocs = await getDocs(collection(fireStore, 'trips', tripId, 'links'))
+      trip.links = linksDocs.docs.map((link) => {
+        return {
+          id: link.id,
+          title: link.data().title,
+          url: link.data().url
+        }
+      })
+
       return trip
     } else {
       return undefined
     }
+  }
+
+  static async createLink(data: ICreateLinkDto) {
+    return addDoc(collection(fireStore, 'trips', data.tripId, 'links'), {
+      title: data.title,
+      url: data.url
+    })
+  }
+
+  static async updateLink(data: IUpdateLinkDto) {
+    const document = doc(fireStore, 'trips', data.tripId, 'links', data.linkId)
+
+    return setDoc(document, {
+      title: data.title,
+      url: data.url
+    })
+  }
+
+  static async deleteLink(data: IUpdateLinkDto) {
+    const document = doc(fireStore, 'trips', data.tripId, 'links', data.linkId)
+
+    return deleteDoc(document)
   }
 }

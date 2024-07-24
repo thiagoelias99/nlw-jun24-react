@@ -26,7 +26,7 @@ export default async function DetailsPage({ params }: Props) {
       <div className='w-full mt-8 flex justify-start items-start gap-8'>
         <ActivitiesSection className='flex-1' />
         <div className='w-1/3 space-y-6'>
-          <LinksSection />
+          <LinksSection tripId={params.tripId} links={data.data.links} />
           <Divider />
           <GuestsSection guests={data.data.guests} />
         </div>
