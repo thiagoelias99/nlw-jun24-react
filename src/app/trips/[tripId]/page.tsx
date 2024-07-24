@@ -18,13 +18,16 @@ export default async function DetailsPage({ params }: Props) {
   }
 
   const data = await api.get<Trip>(`/trips?tripId=${params.tripId}`)
-
-  console.log(data.data)
+  // console.log(data.data)
 
   return (
     <main className='max-w-[1100px] px-8 m-auto flex flex-col justify-center items-center'>
       <div className='w-full mt-8 flex justify-start items-start gap-8'>
-        <ActivitiesSection className='flex-1' />
+        <ActivitiesSection
+          activities={data.data.activities}
+          className='flex-1'
+          tripId={params.tripId}
+        />
         <div className='w-1/3 space-y-6'>
           <LinksSection tripId={params.tripId} links={data.data.links} />
           <Divider />
